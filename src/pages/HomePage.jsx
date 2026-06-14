@@ -6,7 +6,7 @@ import {
   cardClass,
   textPrimary,
   textMuted,
-} from "../utils/theme";
+} from "../styles/theme";
 
 function HomePage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
