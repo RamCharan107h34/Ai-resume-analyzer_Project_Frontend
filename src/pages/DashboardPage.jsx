@@ -4,7 +4,6 @@ import ScoreCard from "../components/resume/ScoreCard";
 import ResumeRadarChart from "../components/resume/RadarChart";
 import AnalysisCard from "../components/resume/AnalysisCard";
 import { textPrimary, textMuted } from "../styles/theme";
-import { FileText } from "lucide-react";
 
 function DashboardPage() {
   const [result, setResult] = useState(null);
@@ -26,37 +25,17 @@ function DashboardPage() {
         </p>
       </div>
 
-      {/* Upload + Score */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        <ResumeUpload onUploadSuccess={handleUploadSuccess} />
+      {/* Upload Section */}
+      <ResumeUpload onUploadSuccess={handleUploadSuccess} />
 
-        {result ? (
-          <ScoreCard result={result} />
-        ) : (
-          <div className="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-10 text-center min-h-[300px]">
-            <FileText className="w-10 h-10 text-slate-300 mb-3" />
-
-            <p className={`font-medium ${textMuted}`}>
-              Score overview appears here
-            </p>
-
-            <p className="text-sm text-slate-400 mt-1">
-              Upload a resume to get started
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Score Overview */}
+      {result && <ScoreCard result={result} />}
 
       {/* Analysis + Radar */}
       {result && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-          <div className="lg:col-span-2">
-            <AnalysisCard result={result} />
-          </div>
-
-          <div>
-            <ResumeRadarChart result={result} />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <AnalysisCard result={result} />
+          <ResumeRadarChart result={result} />
         </div>
       )}
     </div>
