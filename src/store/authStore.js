@@ -11,6 +11,7 @@ export const useAuthStore = create((set) => ({
   user:            null,
   isAuthenticated: false,
   loading:         true, 
+  setUser: (user) => set({ user }),
 
   // ── Register ───────────────────────────────────────────────
   register: async (formData) => {
