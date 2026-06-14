@@ -51,6 +51,16 @@ function HistoryPage() {
     setSelected((prev) => prev?._id === resume._id ? null : resume);
   };
 
+  const handleRescore = (updated) => {
+    // replace the old resume in the list with updated scores
+    setResumes((prev) => prev.map((r) => r._id === updated.resumeId ? { ...r, ...updated } : r));
+    // if this resume is currently selected in the analysis panel, update it too
+    if (selected?._id === updated.resumeId) {
+      setSelected((prev) => ({ ...prev, ...updated }));
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -95,6 +105,7 @@ function HistoryPage() {
                 resume={resume}
                 onDelete={handleDelete}
                 onView={handleView}
+                onRescore={handleRescore} 
               />
             ))}
           </div>

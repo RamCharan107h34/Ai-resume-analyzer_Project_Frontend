@@ -9,6 +9,8 @@ import {
   badgeRed,
   badgeBlue,
 } from "../../styles/theme";
+import RescoreModal from "./RescoreModal";
+
 
 const getScoreBadge = (score) => {
   if (score >= 80) return badgeGreen;
@@ -16,14 +18,6 @@ const getScoreBadge = (score) => {
   return badgeRed;
 };
 
-const getViewUrl = (url, fileType) => {
-  if (fileType === "pdf") {
-    // use Google Docs viewer to preview PDF
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
-  }
-  // DOCX just downloads directly
-  return url;
-};
 
 const getScoreLabel = (score) => {
   if (score >= 80) return "Excellent";
@@ -39,7 +33,7 @@ const formatDate = (date) => {
   });
 };
 
-function HistoryCard({ resume, onDelete, onView }) {
+function HistoryCard({ resume, onDelete, onView, onRescore }) {
   return (
     <div className={cardHoverClass}>
       <div className="flex items-start justify-between gap-4">
@@ -99,6 +93,12 @@ function HistoryCard({ resume, onDelete, onView }) {
             <Award className="w-3.5 h-3.5" />
             View Analysis
           </button>
+
+          {/* re-score */}
+          <RescoreModal
+            resume={resume}
+            onRescore={(updated) => onRescore(updated)}
+          />
 
           {/* delete */}
           <button
