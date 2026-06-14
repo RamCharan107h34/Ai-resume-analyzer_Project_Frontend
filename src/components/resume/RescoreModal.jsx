@@ -11,7 +11,7 @@ import {
   textPrimary,
   textMuted,
   textSecondary,
-} from "../../utils/theme";
+} from "../../styles/theme";
 
 function RescoreModal({ resume, onRescore }) {
   const [jobDescription, setJobDescription] = useState(
