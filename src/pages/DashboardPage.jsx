@@ -14,42 +14,51 @@ function DashboardPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-5">
+    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className={`text-2xl font-bold ${textPrimary}`}>
+        <h1 className={`text-3xl font-bold ${textPrimary}`}>
           Dashboard
         </h1>
-        <p className={`text-sm ${textMuted} mt-1`}>
+
+        <p className={`mt-1 ${textMuted}`}>
           Upload your resume and get instant AI-powered feedback
         </p>
       </div>
 
-      {/* Main Dashboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Upload + Score */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <ResumeUpload onUploadSuccess={handleUploadSuccess} />
 
         {result ? (
           <ScoreCard result={result} />
         ) : (
-          <div className="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-10 text-center">
-            <FileText className="w-10 h-10 text-slate-200 mb-3" />
-            <p className={`text-sm font-medium ${textMuted}`}>
+          <div className="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-10 text-center min-h-[300px]">
+            <FileText className="w-10 h-10 text-slate-300 mb-3" />
+
+            <p className={`font-medium ${textMuted}`}>
               Score overview appears here
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+
+            <p className="text-sm text-slate-400 mt-1">
               Upload a resume to get started
             </p>
           </div>
         )}
-
-        {result && (
-          <>
-            <AnalysisCard result={result} />
-            <ResumeRadarChart result={result} />
-          </>
-        )}
       </div>
+
+      {/* Analysis + Radar */}
+      {result && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          <div className="lg:col-span-2">
+            <AnalysisCard result={result} />
+          </div>
+
+          <div>
+            <ResumeRadarChart result={result} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
