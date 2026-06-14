@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { FileText, Brain, BarChart2 } from "lucide-react";
+import {
+  pageBg,
+  cardClass,
+  textPrimary,
+  textMuted,
+} from "../utils/theme";
 
 function HomePage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -49,41 +55,51 @@ function HomePage() {
       </div>
 
       {/* ── Feature cards ─────────────────────────────────── */}
-      <div className="bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 py-20">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className={pageBg}>
+        <div className="max-w-2xl mx-auto px-4 py-20 space-y-4">
 
-            <div className="bg-white border border-slate-200 rounded-xl p-6">
-              <FileText className="w-7 h-7 text-blue-600 mb-4" />
-              <h3 className="font-semibold text-slate-900 mb-2">
+          <div className={`${cardClass} flex items-start gap-5`}>
+            <div className="bg-blue-50 p-3 rounded-lg shrink-0">
+              <FileText className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className={`font-semibold ${textPrimary} mb-1`}>
                 PDF and DOCX
               </h3>
-              <p className="text-sm text-slate-500">
-                Upload your resume in any format. We handle the text extraction.
+              <p className={`text-sm ${textMuted}`}>
+                Upload your resume in any format. We handle the text extraction automatically.
               </p>
             </div>
+          </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl p-6">
-              <Brain className="w-7 h-7 text-blue-600 mb-4" />
-              <h3 className="font-semibold text-slate-900 mb-2">
+          <div className={`${cardClass} flex items-start gap-5`}>
+            <div className="bg-blue-50 p-3 rounded-lg shrink-0">
+              <Brain className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className={`font-semibold ${textPrimary} mb-1`}>
                 AI Feedback
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className={`text-sm ${textMuted}`}>
                 Powered by Cohere. Get strengths, weaknesses and suggestions in seconds.
               </p>
             </div>
+          </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl p-6">
-              <BarChart2 className="w-7 h-7 text-blue-600 mb-4" />
-              <h3 className="font-semibold text-slate-900 mb-2">
+          <div className={`${cardClass} flex items-start gap-5`}>
+            <div className="bg-blue-50 p-3 rounded-lg shrink-0">
+              <BarChart2 className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className={`font-semibold ${textPrimary} mb-1`}>
                 Score breakdown
               </h3>
-              <p className="text-sm text-slate-500">
-                See your overall score, ATS score and how each section performs.
+              <p className={`text-sm ${textMuted}`}>
+                See your overall score, ATS score and how each section of your resume performs.
               </p>
             </div>
-
           </div>
+
         </div>
       </div>
 
