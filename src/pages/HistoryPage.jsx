@@ -1,31 +1,52 @@
 import { useState, useEffect } from "react";
 import { getHistoryAPI, deleteResumeAPI } from "../services/api";
-import HistoryCard  from "../components/resume/HistoryCard";
-import ScoreCard    from "../components/resume/ScoreCard";
-import AnalysisCard from "../components/resume/AnalysisCard";
+import HistoryCard      from "../components/resume/HistoryCard";
+import AnalysisCard     from "../components/resume/AnalysisCard";
 import ResumeRadarChart from "../components/resume/RadarChart";
-import { Award } from "lucide-react";
 import toast from "react-hot-toast";
-import { History, X } from "lucide-react";
+import { History, X, BarChart2, ClipboardList } from "lucide-react";
 import {
   textPrimary,
   textMuted,
   cardClass,
   btnSecondary,
+  badgeGreen,
+  badgeAmber,
+  badgeRed,
 } from "../styles/theme";
+
+// inline score row instead of big rings
+const ScoreRow = ({ result }) => {
+  const getColor = (s) => s >= 80 ? "text-green-600" : s >= 60 ? "text-amber-500" : "text-red-500";
+
+  return (
+    <div className="flex items-center gap-4 py-3 border-b border-slate-100">
+      {[
+        { label: "Overall",  value: result.overallScore },
+        { label: "ATS",      value: result.atsScore     },
+        { label: "Match",    value: result.matchScore   },
+      ].map(({ label, value }) => (
+        <div key={label} className="flex items-center gap-1.5">
+          <span className={`text-lg font-bold ${getColor(value)}`}>{value}</span>
+          <span className={`text-xs ${textMuted}`}>{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 function HistoryPage() {
   const [resumes,  setResumes]  = useState([]);
   const [loading,  setLoading]  = useState(true);
-  const [selected, setSelected] = useState(null); // for analysis panel
+  const [selected, setSelected] = useState(null);
+  const [tab,      setTab]      = useState("analysis"); // "analysis" | "radar"
 
-  // ── Fetch history on mount ─────────────────────────────────
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const res = await getHistoryAPI();
         setResumes(res.data.data);
-      } catch (err) {
+      } catch {
         toast.error("Failed to load history");
       } finally {
         setLoading(false);
@@ -34,32 +55,30 @@ function HistoryPage() {
     fetchHistory();
   }, []);
 
-  // ── Delete resume ──────────────────────────────────────────
   const handleDelete = async (id) => {
     try {
       await deleteResumeAPI(id);
       setResumes((prev) => prev.filter((r) => r._id !== id));
       if (selected?._id === id) setSelected(null);
       toast.success("Resume deleted");
-    } catch (err) {
+    } catch {
       toast.error("Failed to delete resume");
     }
   };
 
-  // ── View analysis ──────────────────────────────────────────
   const handleView = (resume) => {
     setSelected((prev) => prev?._id === resume._id ? null : resume);
+    setTab("analysis");
   };
 
   const handleRescore = (updated) => {
-    // replace the old resume in the list with updated scores
-    setResumes((prev) => prev.map((r) => r._id === updated.resumeId ? { ...r, ...updated } : r));
-    // if this resume is currently selected in the analysis panel, update it too
+    setResumes((prev) =>
+      prev.map((r) => r._id === updated.resumeId ? { ...r, ...updated } : r)
+    );
     if (selected?._id === updated.resumeId) {
       setSelected((prev) => ({ ...prev, ...updated }));
     }
   };
-
 
   if (loading) {
     return (
@@ -70,9 +89,9 @@ function HistoryPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-4">
 
-      {/* ── Page title ────────────────────────────────────── */}
+      {/* ── Page title ──────────────────────────────────── */}
       <div>
         <h1 className={`text-2xl font-bold ${textPrimary}`}>History</h1>
         <p className={`text-sm ${textMuted} mt-1`}>
@@ -80,23 +99,21 @@ function HistoryPage() {
         </p>
       </div>
 
-      {/* ── Empty state ───────────────────────────────────── */}
+      {/* ── Empty state ─────────────────────────────────── */}
       {resumes.length === 0 ? (
-        <div className={`${cardClass} flex flex-col items-center justify-center py-16 text-center`}>
-          <History className="w-12 h-12 text-slate-200 mb-4" />
-          <p className={`text-base font-medium ${textPrimary} mb-1`}>
-            No resumes yet
-          </p>
-          <p className={`text-sm ${textMuted}`}>
+        <div className={`${cardClass} flex flex-col items-center justify-center py-12 text-center`}>
+          <History className="w-10 h-10 text-slate-200 mb-3" />
+          <p className={`text-sm font-medium ${textPrimary} mb-1`}>No resumes yet</p>
+          <p className={`text-xs ${textMuted}`}>
             Upload a resume from the dashboard to get started
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
           {/* ── Resume list ─────────────────────────────── */}
-          <div className="space-y-4">
-            <p className={`text-sm ${textMuted}`}>
+          <div className="space-y-3">
+            <p className={`text-xs ${textMuted}`}>
               {resumes.length} resume{resumes.length !== 1 ? "s" : ""} analyzed
             </p>
             {resumes.map((resume) => (
@@ -105,38 +122,67 @@ function HistoryPage() {
                 resume={resume}
                 onDelete={handleDelete}
                 onView={handleView}
-                onRescore={handleRescore} 
+                onRescore={handleRescore}
               />
             ))}
           </div>
 
           {/* ── Analysis panel ──────────────────────────── */}
-          <div>
+          <div className="sticky top-20 self-start">
             {selected ? (
-              <div className="space-y-4 sticky top-24">
+              <div className={cardClass}>
 
                 {/* header */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <p className={`text-sm font-medium ${textPrimary} truncate`}>
                     {selected.fileName}
                   </p>
                   <button
                     onClick={() => setSelected(null)}
-                    className={`${btnSecondary} text-xs flex items-center gap-1.5`}
+                    className={`${btnSecondary} text-xs flex items-center gap-1 py-1 px-2`}
                   >
-                    <X className="w-3.5 h-3.5" /> Close
+                    <X className="w-3 h-3" /> Close
                   </button>
                 </div>
 
-                <ScoreCard        result={selected} />
-                <ResumeRadarChart result={selected} />
-                <AnalysisCard     result={selected} />
+                {/* inline scores */}
+                <ScoreRow result={selected} />
+
+                {/* tabs */}
+                <div className="flex gap-1 mt-3 mb-3 border-b border-slate-100">
+                  <button
+                    onClick={() => setTab("analysis")}
+                    className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 -mb-px transition-colors
+                      ${tab === "analysis"
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent text-slate-500 hover:text-slate-700"
+                      }`}
+                  >
+                    <ClipboardList className="w-3.5 h-3.5" /> Analysis
+                  </button>
+                  <button
+                    onClick={() => setTab("radar")}
+                    className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium border-b-2 -mb-px transition-colors
+                      ${tab === "radar"
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent text-slate-500 hover:text-slate-700"
+                      }`}
+                  >
+                    <BarChart2 className="w-3.5 h-3.5" /> Radar
+                  </button>
+                </div>
+
+                {/* tab content */}
+                {tab === "analysis"
+                  ? <AnalysisCard     result={selected} />
+                  : <ResumeRadarChart result={selected} />
+                }
 
               </div>
             ) : (
-              <div className="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-10 text-center h-64 sticky top-24">
-                <Award className="w-8 h-8 text-slate-200 mb-3" />
-                <p className={`text-sm font-medium ${textMuted}`}>
+              <div className="border-2 border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center p-8 text-center h-48">
+                <BarChart2 className="w-7 h-7 text-slate-200 mb-2" />
+                <p className={`text-xs font-medium ${textMuted}`}>
                   Select a resume to view analysis
                 </p>
               </div>

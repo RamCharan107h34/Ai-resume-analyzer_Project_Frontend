@@ -1,103 +1,65 @@
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import { FileText, Brain, BarChart2 } from "lucide-react";
-import { pageBg, cardClass, textPrimary, textMuted } from "../styles/theme";
+import { pageBg, textMuted } from "../styles/theme";
+const heroImage = "https://media.istockphoto.com/id/1138171094/photo/professional-headhunter-reviewing-resume-at-the-desk-and-making-decision-before-hiring.jpg?s=170667a&w=0&k=20&c=vjhr6t4zcBwrDvpkQnOYhSisP3MDAgpZSfLdlpJIHaE="; // ← add your image here
 
 function HomePage() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
-    <div>
+    <div className={pageBg}>
+      <div className="max-w-6xl mx-auto px-6 py-16 sm:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
-      {/* ── Hero ──────────────────────────────────────────── */}
-      <div className="bg-blue-600 text-white">
-        <div className="max-w-2xl mx-auto px-4 py-14 text-center">
-
-          <h1 className="text-3xl sm:text-4xl font-bold mb-3 leading-tight">
-            Get your resume scored by AI
-          </h1>
-
-          <p className="text-blue-100 text-base mb-7 max-w-lg mx-auto">
-            Upload your resume and get instant feedback on your ATS score,
-            keyword gaps and what to improve.
-          </p>
-
-          {isAuthenticated ? (
-            <Link
-              to="/dashboard"
-              className="inline-block bg-white text-blue-600 font-semibold px-6 py-2.5 rounded-lg hover:bg-blue-50 transition-colors text-sm"
-            >
-              Go to Dashboard
-            </Link>
-          ) : (
-            <div className="flex items-center justify-center gap-3">
-              <Link
-                to="/register"
-                className="inline-block bg-white text-blue-600 font-semibold px-6 py-2.5 rounded-lg hover:bg-blue-50 transition-colors text-sm"
-              >
-                Get started free
-              </Link>
-              <Link
-                to="/login"
-                className="inline-block border border-white text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-sm"
-              >
-                Sign in
-              </Link>
-            </div>
-          )}
-
-        </div>
-      </div>
-
-      {/* ── Feature cards ─────────────────────────────────── */}
-      <div className={pageBg}>
-        <div className="max-w-xl mx-auto px-4 py-10 space-y-3">
-
-          <div className={`${cardClass} flex items-start gap-4 p-4`}>
-            <div className="bg-blue-50 p-2.5 rounded-lg shrink-0">
-              <FileText className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className={`text-sm font-semibold ${textPrimary} mb-0.5`}>
-                PDF and DOCX
-              </h3>
-              <p className={`text-xs ${textMuted}`}>
-                Upload your resume in any format. We handle the text extraction automatically.
-              </p>
+          {/* left — text */}
+          <div>
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight mb-4">
+              We analyze your{" "}
+              <span className="text-blue-600">Resume</span>{" "}
+              with AI
+            </h1>
+            <p className={`text-base ${textMuted} mb-8 max-w-md leading-relaxed`}>
+              Upload your resume and get instant ATS scores, keyword
+              analysis and actionable feedback to land more interviews.
+            </p>
+            <div className="flex items-center gap-3">
+              {isAuthenticated ? (
+                <Link
+                  to="/dashboard"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm"
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/register"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm"
+                  >
+                    Get Started
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="border border-slate-300 hover:border-blue-600 text-slate-700 hover:text-blue-600 font-semibold px-6 py-2.5 rounded-lg transition-colors text-sm"
+                  >
+                    Sign in
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
-          <div className={`${cardClass} flex items-start gap-4 p-4`}>
-            <div className="bg-blue-50 p-2.5 rounded-lg shrink-0">
-              <Brain className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className={`text-sm font-semibold ${textPrimary} mb-0.5`}>
-                AI Feedback
-              </h3>
-              <p className={`text-xs ${textMuted}`}>
-                Powered by Cohere. Get strengths, weaknesses and suggestions in seconds.
-              </p>
-            </div>
-          </div>
-
-          <div className={`${cardClass} flex items-start gap-4 p-4`}>
-            <div className="bg-blue-50 p-2.5 rounded-lg shrink-0">
-              <BarChart2 className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className={`text-sm font-semibold ${textPrimary} mb-0.5`}>
-                Score breakdown
-              </h3>
-              <p className={`text-xs ${textMuted}`}>
-                See your overall score, ATS score and how each section of your resume performs.
-              </p>
-            </div>
+          {/* right — image */}
+          <div className="flex items-center justify-center">
+            <img
+              src={heroImage}
+              alt="Resume analysis"
+              className="w-full max-w-md object-contain"
+            />
           </div>
 
         </div>
       </div>
-
     </div>
   );
 }
